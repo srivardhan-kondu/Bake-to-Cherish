@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAKE TO CHERRIISH - Classic Cakes, Premium Joy</title>
+    <meta name="description" content="BAKE TO CHERRIISH - Premium bakery offering classic cakes, specialty desserts, brownies, cookies and more. Celebrating with cake, cherishing each treat.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <div class="header__logo">
+                    <h1 class="logo">BAKE TO CHERRIISH</h1>
+                </div>
+                <nav class="header__nav">
+                    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </button>
+                    <ul class="nav-menu" id="navMenu" role="menu">
+                        <li role="none"><a href="#home" class="nav-link" role="menuitem">Home</a></li>
+                        <li role="none"><a href="#classic" class="nav-link" role="menuitem">Classic Cakes</a></li>
+                        <li role="none"><a href="#premium" class="nav-link" role="menuitem">Premium</a></li>
+                        <li role="none"><a href="#speciality" class="nav-link" role="menuitem">Chef's Speciality</a></li>
+                        <li role="none"><a href="#treats" class="nav-link" role="menuitem">Treats</a></li>
+                        <li role="none"><a href="#contact" class="nav-link" role="menuitem">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero__content">
+            <div class="hero__text">
+                <h2 class="hero__title">Classic Cakes, Premium Joy</h2>
+                <p class="hero__subtitle">Celebrating with cake, cherishing each treat</p>
+                <button class="hero__cta" aria-label="Explore our menu">Explore Our Menu</button>
+            </div>
+            <div class="hero__decoration" aria-hidden="true">
+                <div class="cake-icon">🎂</div>
+                <div class="cherry-icon">🍒</div>
+                <div class="cupcake-icon">🧁</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Classic Cakes Section -->
+    <section id="classic" class="menu-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-icon" aria-hidden="true">🍰</div>
+                <h3 class="section-title">Classic Cakes</h3>
+                <p class="section-subtitle">Timeless favorites made with love</p>
+            </div>
+            <div class="product-grid" id="classicGrid">
+                <!-- Classic cakes will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Cakes Section -->
+    <section id="premium" class="menu-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-icon" aria-hidden="true">👑</div>
+                <h3 class="section-title">Premium Cakes</h3>
+                <p class="section-subtitle">Luxurious flavors for special moments</p>
+            </div>
+            <div class="product-grid" id="premiumGrid">
+                <!-- Premium cakes will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Chef's Speciality Section -->
+    <section id="speciality" class="menu-section speciality-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-icon" aria-hidden="true">👨‍🍳</div>
+                <h3 class="section-title">Chef's Speciality</h3>
+                <p class="section-subtitle">Signature creations that define excellence</p>
+            </div>
+            <div class="product-grid" id="specialityGrid">
+                <!-- Chef's speciality will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Treats Section (Brownies, Cookies, Muffins) -->
+    <section id="treats" class="menu-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-icon" aria-hidden="true">🍪</div>
+                <h3 class="section-title">Sweet Treats</h3>
+                <p class="section-subtitle">Perfect companions for your coffee break</p>
+            </div>
+            
+            <div class="treats-container">
+                <div class="treat-category">
+                    <h4 class="treat-title">Brownies</h4>
+                    <div class="product-grid" id="browniesGrid">
+                        <!-- Brownies will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="treat-category">
+                    <h4 class="treat-title">Cookies</h4>
+                    <div class="product-grid" id="cookiesGrid">
+                        <!-- Cookies will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="treat-category">
+                    <h4 class="treat-title">Muffins & Cupcakes</h4>
+                    <div class="product-grid" id="muffinsGrid">
+                        <!-- Muffins & Cupcakes will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__brand">
+                    <h4 class="footer__logo">BAKE TO CHERRIISH</h4>
+                    <p class="footer__tagline">Where every bite tells a story</p>
+                </div>
+                
+                <div class="footer__contact">
+                    <h5 class="footer__title">Contact Us</h5>
+                    <div class="contact-info">
+                        <p><span aria-hidden="true">📧</span> <a href="mailto:hello@baketocherriish.com" style="color: var(--bakery-vanilla-cream); text-decoration: none;">hello@baketocherriish.com</a></p>
+                        <p><span aria-hidden="true">📞</span> <a href="tel:+911234567890" style="color: var(--bakery-vanilla-cream); text-decoration: none;">+91 12345 67890</a></p>
+                        <p><span aria-hidden="true">📍</span> 123 Bakery Street, Sweet City</p>
+                    </div>
+                </div>
+                
+                <div class="footer__social">
+                    <h5 class="footer__title">Follow Us</h5>
+                    <div class="social-links">
+                        <a href="#" target="_blank" rel="noopener" class="social-link"><span aria-hidden="true">📘</span> Facebook</a>
+                        <a href="#" target="_blank" rel="noopener" class="social-link"><span aria-hidden="true">📸</span> Instagram</a>
+                        <a href="#" target="_blank" rel="noopener" class="social-link"><span aria-hidden="true">🐦</span> Twitter</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer__bottom">
+                <p>&copy; 2025 BAKE TO CHERRIISH. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "bake-to-cherriish",
+  "version": "1.0.0",
+  "description": "BAKE TO CHERRIISH - Classic Cakes, Premium Joy",
+  "main": "index.html",
+  "scripts": {
+    "start": "node --no-deprecation --no-warnings ./node_modules/.bin/http-server . -p 5000 -o -s",
+    "dev": "node --no-deprecation --no-warnings ./node_modules/.bin/http-server . -p 5000 -o -s",
+    "serve": "node --no-deprecation --no-warnings ./node_modules/.bin/http-server . -p 5000 -s"
+  },
+  "keywords": [
+    "bakery",
+    "cakes",
+    "desserts",
+    "website"
+  ],
+  "author": "BAKE TO CHERRIISH",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "homepage": "."
+}
