@@ -34,14 +34,22 @@
   --color-orange-400-rgb: 230, 129, 97;
 
   /* Background color tokens (Light Mode) */
-  --color-bg-1: rgba(59, 130, 246, 0.08); /* Light blue */
-  --color-bg-2: rgba(245, 158, 11, 0.08); /* Light yellow */
-  --color-bg-3: rgba(34, 197, 94, 0.08); /* Light green */
-  --color-bg-4: rgba(239, 68, 68, 0.08); /* Light red */
-  --color-bg-5: rgba(147, 51, 234, 0.08); /* Light purple */
-  --color-bg-6: rgba(249, 115, 22, 0.08); /* Light orange */
-  --color-bg-7: rgba(236, 72, 153, 0.08); /* Light pink */
-  --color-bg-8: rgba(6, 182, 212, 0.08); /* Light cyan */
+  --color-bg-1: rgba(59, 130, 246, 0.08);
+  /* Light blue */
+  --color-bg-2: rgba(245, 158, 11, 0.08);
+  /* Light yellow */
+  --color-bg-3: rgba(34, 197, 94, 0.08);
+  /* Light green */
+  --color-bg-4: rgba(239, 68, 68, 0.08);
+  /* Light red */
+  --color-bg-5: rgba(147, 51, 234, 0.08);
+  /* Light purple */
+  --color-bg-6: rgba(249, 115, 22, 0.08);
+  /* Light orange */
+  --color-bg-7: rgba(236, 72, 153, 0.08);
+  /* Light pink */
+  --color-bg-8: rgba(6, 182, 212, 0.08);
+  /* Light cyan */
 
   /* Semantic Color Tokens (Light Mode) */
   --color-background: var(--color-cream-50);
@@ -154,14 +162,22 @@
     --color-gray-200-rgb: 245, 245, 245;
 
     /* Background color tokens (Dark Mode) */
-    --color-bg-1: rgba(29, 78, 216, 0.15); /* Dark blue */
-    --color-bg-2: rgba(180, 83, 9, 0.15); /* Dark yellow */
-    --color-bg-3: rgba(21, 128, 61, 0.15); /* Dark green */
-    --color-bg-4: rgba(185, 28, 28, 0.15); /* Dark red */
-    --color-bg-5: rgba(107, 33, 168, 0.15); /* Dark purple */
-    --color-bg-6: rgba(194, 65, 12, 0.15); /* Dark orange */
-    --color-bg-7: rgba(190, 24, 93, 0.15); /* Dark pink */
-    --color-bg-8: rgba(8, 145, 178, 0.15); /* Dark cyan */
+    --color-bg-1: rgba(29, 78, 216, 0.15);
+    /* Dark blue */
+    --color-bg-2: rgba(180, 83, 9, 0.15);
+    /* Dark yellow */
+    --color-bg-3: rgba(21, 128, 61, 0.15);
+    /* Dark green */
+    --color-bg-4: rgba(185, 28, 28, 0.15);
+    /* Dark red */
+    --color-bg-5: rgba(107, 33, 168, 0.15);
+    /* Dark purple */
+    --color-bg-6: rgba(194, 65, 12, 0.15);
+    /* Dark orange */
+    --color-bg-7: rgba(190, 24, 93, 0.15);
+    /* Dark pink */
+    --color-bg-8: rgba(8, 145, 178, 0.15);
+    /* Dark cyan */
 
     /* Semantic Color Tokens (Dark Mode) */
     --color-background: var(--color-charcoal-700);
@@ -214,14 +230,22 @@
   --color-gray-200-rgb: 245, 245, 245;
 
   /* Colorful background palette - Dark Mode */
-  --color-bg-1: rgba(29, 78, 216, 0.15); /* Dark blue */
-  --color-bg-2: rgba(180, 83, 9, 0.15); /* Dark yellow */
-  --color-bg-3: rgba(21, 128, 61, 0.15); /* Dark green */
-  --color-bg-4: rgba(185, 28, 28, 0.15); /* Dark red */
-  --color-bg-5: rgba(107, 33, 168, 0.15); /* Dark purple */
-  --color-bg-6: rgba(194, 65, 12, 0.15); /* Dark orange */
-  --color-bg-7: rgba(190, 24, 93, 0.15); /* Dark pink */
-  --color-bg-8: rgba(8, 145, 178, 0.15); /* Dark cyan */
+  --color-bg-1: rgba(29, 78, 216, 0.15);
+  /* Dark blue */
+  --color-bg-2: rgba(180, 83, 9, 0.15);
+  /* Dark yellow */
+  --color-bg-3: rgba(21, 128, 61, 0.15);
+  /* Dark green */
+  --color-bg-4: rgba(185, 28, 28, 0.15);
+  /* Dark red */
+  --color-bg-5: rgba(107, 33, 168, 0.15);
+  /* Dark purple */
+  --color-bg-6: rgba(194, 65, 12, 0.15);
+  /* Dark orange */
+  --color-bg-7: rgba(190, 24, 93, 0.15);
+  /* Dark pink */
+  --color-bg-8: rgba(8, 145, 178, 0.15);
+  /* Dark cyan */
 
   /* Semantic Color Tokens (Dark Mode) */
   --color-background: var(--color-charcoal-700);
@@ -336,18 +360,23 @@ h6 {
 h1 {
   font-size: var(--font-size-4xl);
 }
+
 h2 {
   font-size: var(--font-size-3xl);
 }
+
 h3 {
   font-size: var(--font-size-2xl);
 }
+
 h4 {
   font-size: var(--font-size-xl);
 }
+
 h5 {
   font-size: var(--font-size-lg);
 }
+
 h6 {
   font-size: var(--font-size-md);
 }
@@ -568,43 +597,31 @@ select.form-control {
 }
 
 .status--success {
-  background-color: rgba(
-    var(--color-success-rgb, 33, 128, 141),
-    var(--status-bg-opacity)
-  );
+  background-color: rgba(var(--color-success-rgb, 33, 128, 141),
+      var(--status-bg-opacity));
   color: var(--color-success);
-  border: 1px solid
-    rgba(var(--color-success-rgb, 33, 128, 141), var(--status-border-opacity));
+  border: 1px solid rgba(var(--color-success-rgb, 33, 128, 141), var(--status-border-opacity));
 }
 
 .status--error {
-  background-color: rgba(
-    var(--color-error-rgb, 192, 21, 47),
-    var(--status-bg-opacity)
-  );
+  background-color: rgba(var(--color-error-rgb, 192, 21, 47),
+      var(--status-bg-opacity));
   color: var(--color-error);
-  border: 1px solid
-    rgba(var(--color-error-rgb, 192, 21, 47), var(--status-border-opacity));
+  border: 1px solid rgba(var(--color-error-rgb, 192, 21, 47), var(--status-border-opacity));
 }
 
 .status--warning {
-  background-color: rgba(
-    var(--color-warning-rgb, 168, 75, 47),
-    var(--status-bg-opacity)
-  );
+  background-color: rgba(var(--color-warning-rgb, 168, 75, 47),
+      var(--status-bg-opacity));
   color: var(--color-warning);
-  border: 1px solid
-    rgba(var(--color-warning-rgb, 168, 75, 47), var(--status-border-opacity));
+  border: 1px solid rgba(var(--color-warning-rgb, 168, 75, 47), var(--status-border-opacity));
 }
 
 .status--info {
-  background-color: rgba(
-    var(--color-info-rgb, 98, 108, 113),
-    var(--status-bg-opacity)
-  );
+  background-color: rgba(var(--color-info-rgb, 98, 108, 113),
+      var(--status-bg-opacity));
   color: var(--color-info);
-  border: 1px solid
-    rgba(var(--color-info-rgb, 98, 108, 113), var(--status-border-opacity));
+  border: 1px solid rgba(var(--color-info-rgb, 98, 108, 113), var(--status-border-opacity));
 }
 
 /* Container layout */
@@ -621,16 +638,19 @@ select.form-control {
     max-width: var(--container-sm);
   }
 }
+
 @media (min-width: 768px) {
   .container {
     max-width: var(--container-md);
   }
 }
+
 @media (min-width: 1024px) {
   .container {
     max-width: var(--container-lg);
   }
 }
+
 @media (min-width: 1280px) {
   .container {
     max-width: var(--container-xl);
@@ -641,24 +661,31 @@ select.form-control {
 .flex {
   display: flex;
 }
+
 .flex-col {
   flex-direction: column;
 }
+
 .items-center {
   align-items: center;
 }
+
 .justify-center {
   justify-content: center;
 }
+
 .justify-between {
   justify-content: space-between;
 }
+
 .gap-4 {
   gap: var(--space-4);
 }
+
 .gap-8 {
   gap: var(--space-8);
 }
+
 .gap-16 {
   gap: var(--space-16);
 }
@@ -666,16 +693,20 @@ select.form-control {
 .m-0 {
   margin: 0;
 }
+
 .mt-8 {
   margin-top: var(--space-8);
 }
+
 .mb-8 {
   margin-bottom: var(--space-8);
 }
+
 .mx-8 {
   margin-left: var(--space-8);
   margin-right: var(--space-8);
 }
+
 .my-8 {
   margin-top: var(--space-8);
   margin-bottom: var(--space-8);
@@ -684,18 +715,22 @@ select.form-control {
 .p-0 {
   padding: 0;
 }
+
 .py-8 {
   padding-top: var(--space-8);
   padding-bottom: var(--space-8);
 }
+
 .px-8 {
   padding-left: var(--space-8);
   padding-right: var(--space-8);
 }
+
 .py-16 {
   padding-top: var(--space-16);
   padding-bottom: var(--space-16);
 }
+
 .px-16 {
   padding-left: var(--space-16);
   padding-right: var(--space-16);
@@ -704,6 +739,7 @@ select.form-control {
 .block {
   display: block;
 }
+
 .hidden {
   display: none;
 }
@@ -733,8 +769,7 @@ select.form-control {
 
 @font-face {
   font-family: 'FKGroteskNeue';
-  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
-    format('woff2');
+  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
 }
 
 /* END PERPLEXITY DESIGN SYSTEM */
@@ -746,7 +781,7 @@ select.form-control {
   --bakery-raspberry-red: #E55472;
   --bakery-mint-green: #A8E6CF;
   --bakery-white: #FFFFFF;
-  
+
   /* Override design system colors for bakery theme */
   --color-primary: var(--bakery-strawberry-pink);
   --color-primary-hover: #f59ca3;
@@ -757,7 +792,7 @@ select.form-control {
   --color-text-secondary: #8b6b52;
   --color-accent: var(--bakery-raspberry-red);
   --color-success: var(--bakery-mint-green);
-  
+
   /* Typography overrides */
   --font-family-heading: 'Playfair Display', serif;
   --font-family-body: 'Montserrat', sans-serif;
@@ -779,7 +814,12 @@ body {
 }
 
 /* Typography - Mobile First */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-family-heading);
   color: var(--bakery-chocolate-brown);
   margin: 0;
@@ -970,7 +1010,9 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0.2;
 }
 
-.cake-icon, .cherry-icon, .cupcake-icon {
+.cake-icon,
+.cherry-icon,
+.cupcake-icon {
   position: absolute;
   font-size: 2rem;
   animation: float 6s ease-in-out infinite;
@@ -995,8 +1037,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
 }
 
 /* Menu Sections - Mobile First */
@@ -1250,15 +1299,17 @@ html {
 }
 
 /* Additional animations */
+/* Additional animations */
 .product-card {
-  animation: fadeInUp 0.6s ease-out;
+  animation: fadeInUp 0.1s ease-out;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(15px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1271,20 +1322,20 @@ html {
     padding: 0 2rem;
     max-width: 1200px;
   }
-  
+
   .header__content {
     padding: 1rem 0;
     min-height: 70px;
   }
-  
+
   .header__logo .logo {
     font-size: 1.5rem;
   }
-  
+
   .nav-toggle {
     display: none;
   }
-  
+
   .nav-menu {
     position: static;
     width: auto;
@@ -1298,11 +1349,11 @@ html {
     left: 0;
     transition: none;
   }
-  
+
   .nav-menu li {
     border-bottom: none;
   }
-  
+
   .nav-link {
     padding: 0.5rem 1rem;
     border-radius: 25px;
@@ -1310,76 +1361,78 @@ html {
     font-size: 1rem;
     display: inline-flex;
   }
-  
+
   .hero {
     margin-top: 70px;
     min-height: 60vh;
     padding: 3rem 0;
   }
-  
+
   .hero__title {
     font-size: 2.75rem;
   }
-  
+
   .hero__subtitle {
     font-size: 1.1rem;
   }
-  
+
   .hero__cta {
     padding: 1rem 2rem;
     font-size: 1.1rem;
   }
-  
+
   .hero__decoration {
     opacity: 0.25;
   }
-  
-  .cake-icon, .cherry-icon, .cupcake-icon {
+
+  .cake-icon,
+  .cherry-icon,
+  .cupcake-icon {
     font-size: 3rem;
   }
-  
+
   .menu-section {
     padding: 3rem 0;
   }
-  
+
   .section-title {
     font-size: 2.25rem;
   }
-  
+
   .section-subtitle {
     font-size: 1rem;
   }
-  
+
   .section-icon {
     font-size: 3rem;
   }
-  
+
   /* Two column grid for tablets */
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-  
+
   .treat-title {
     font-size: 1.75rem;
   }
-  
+
   .treat-title::after {
     width: 80px;
   }
-  
+
   .footer__content {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     text-align: left;
   }
-  
+
   .footer__brand {
     grid-column: 1 / -1;
     text-align: center;
   }
-  
+
   .social-links {
     flex-direction: row;
     justify-content: flex-start;
@@ -1392,94 +1445,103 @@ html {
   .header__content {
     min-height: 80px;
   }
-  
+
   .header__logo .logo {
     font-size: 1.8rem;
   }
-  
+
   .nav-menu {
     gap: 2rem;
   }
-  
+
   .hero {
     margin-top: 80px;
     min-height: 70vh;
     padding: 4rem 0;
   }
-  
+
   .hero__content {
     max-width: 800px;
     padding: 2rem;
   }
-  
+
   .hero__title {
     font-size: 3.5rem;
   }
-  
+
   .hero__subtitle {
     font-size: 1.2rem;
   }
-  
+
   .hero__decoration {
     opacity: 0.3;
   }
-  
-  .cake-icon, .cherry-icon, .cupcake-icon {
+
+  .cake-icon,
+  .cherry-icon,
+  .cupcake-icon {
     font-size: 4rem;
   }
-  
+
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
   }
-  
+
   .menu-section {
     padding: 4rem 0;
   }
-  
+
   .section-header {
     margin-bottom: 3rem;
   }
-  
+
   .section-title {
     font-size: 2.5rem;
   }
-  
+
   .section-subtitle {
     font-size: 1.1rem;
   }
-  
+
   /* Three to four column grid for desktop */
   .product-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
   }
-  
+
   .product-card {
     padding: 1.5rem;
   }
-  
+
   .product-card:hover {
     transform: translateY(-5px);
   }
-  
+
   .treat-title {
     font-size: 1.8rem;
   }
-  
+
   .treats-container {
     gap: 3rem;
   }
-  
+
   .footer {
     padding: 3rem 0 1rem;
   }
-  
+
   .footer__content {
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
   }
-  
+
   .footer__brand {
     grid-column: auto;
     text-align: left;
@@ -1491,7 +1553,7 @@ html {
   .container {
     max-width: 1280px;
   }
-  
+
   .product-grid {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2.5rem;
@@ -1511,12 +1573,12 @@ html {
     transform: none;
     box-shadow: 0 3px 12px rgba(107, 79, 57, 0.1);
   }
-  
+
   .nav-link:hover {
     background-color: transparent;
     color: var(--bakery-chocolate-brown);
   }
-  
+
   .hero__cta:hover {
     transform: none;
   }
@@ -1533,7 +1595,7 @@ html {
   .product-card {
     border: 2px solid var(--bakery-chocolate-brown);
   }
-  
+
   .nav-link:hover,
   .nav-link:focus {
     outline: 2px solid var(--bakery-white);
@@ -1548,7 +1610,7 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
+
   .hero__decoration {
     display: none;
   }
