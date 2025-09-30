@@ -1,192 +1,304 @@
-// Bakery data
+/* ================================================
+   Aggressive performance-first app.js
+   - Minimal initial synchronous DOM
+   - Chunked append (very small batches)
+   - Image lazy-loading via IntersectionObserver
+   - Skeleton placeholders for immediate perceived performance
+   - Sentinel to prioritize finishing only when user scrolls near bottom
+   ================================================ */
+
+/* ----------------- sample bakery data (use your real data if you already have it) ----------------- */
 const bakeryData = {
-  bakery: {
-    name: "BAKE TO CHERRIISH",
-    tagline: "Classic Cakes, Premium Joy",
-    description: "Celebrating with cake, cherishing each treat"
-  },
+  bakery: { name: "BAKE TO CHERRIISH" },
   menu: {
-    classic_cakes: [
-      {name: "Vanilla", price_half: "₹499", price_full: "₹899"},
-      {name: "Pineapple", price_half: "₹549", price_full: "₹949"},
-      {name: "Strawberry", price_half: "₹549", price_full: "₹949"},
-      {name: "Blueberry", price_half: "₹549", price_full: "₹949"},
-      {name: "Raspberry", price_half: "₹549", price_full: "₹949"},
-      {name: "Butterscotch", price_half: "₹599", price_full: "₹999"},
-      {name: "Chocolate", price_half: "₹599", price_full: "₹999"},
-      {name: "Black Forest", price_half: "₹649", price_full: "₹1099"},
-      {name: "Red Velvet", price_half: "₹699", price_full: "₹1199"},
-      {name: "Coffee", price_half: "₹649", price_full: "₹1099"}
-    ],
-    premium_cakes: [
-      {name: "Ferrero Rocher", price_half: "₹799", price_full: "₹1499"},
-      {name: "Oreo Delight", price_half: "₹749", price_full: "₹1399"},
-      {name: "Salted Caramel", price_half: "₹799", price_full: "₹1499"},
-      {name: "Hazelnut", price_half: "₹899", price_full: "₹1699"}
-    ],
-    chef_speciality: [
-      {name: "Signature Truffle", price_half: "₹999", price_full: "₹1799"},
-      {name: "Lemon Meringue", price_half: "₹849", price_full: "₹1599"}
-    ],
-    brownies: [
-      {name: "Classic Brownie", price: "₹149"},
-      {name: "Nutty Brownie", price: "₹179"},
-      {name: "Salted Caramel Brownie", price: "₹199"}
-    ],
-    cookies: [
-      {name: "Chocolate Chip", price: "₹39"},
-      {name: "Oatmeal Raisin", price: "₹49"},
-      {name: "Butter Cookies", price: "₹29"}
-    ],
-    muffins_cupcakes: [
-      {name: "Blueberry Muffin", price: "₹79"},
-      {name: "Chocolate Cupcake", price: "₹69"},
-      {name: "Banana Muffin", price: "₹69"}
-    ]
+    classic_cakes: [ /* ... your items ... */ ],
+    premium_cakes: [],
+    chef_speciality: [],
+    brownies: [],
+    cookies: [],
+    muffins_cupcakes: []
   }
 };
+/* NOTE: If your app already sets bakeryData elsewhere, remove the sample or keep real data source. */
 
-/* ----------------- helpers to build product cards (assumed similar to previous code) ------------------- */
-function createCakeCard(cake, isSpecial = false) {
+/* ----------------- utilities ----------------- */
+function nowMs() { return performance && performance.now ? performance.now() : Date.now(); }
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"'`=\/]/g, function(s) {
+    return ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+      '/': '&#x2F;',
+      '`': '&#x60;',
+      '=': '&#x3D;'
+    })[s];
+  });
+}
+
+/* ===========================
+   Skeleton + Card factories
+   =========================== */
+function createSkeletonCard() {
+  const s = document.createElement('div');
+  s.className = 'product-card skeleton';
+  s.innerHTML = `
+    <div class="product-thumb skeleton-thumb"></div>
+    <div class="product-info">
+      <div class="skele-line skele-title"></div>
+      <div class="skele-line skele-sub"></div>
+      <div class="skele-line skele-btn"></div>
+    </div>
+  `;
+  // immediate low-cost styles to avoid layout thrash
+  s.style.minHeight = '220px';
+  s.style.contain = 'paint layout size';
+  return s;
+}
+
+function makeImgPath(name, folder='') {
+  if (!name) return '';
+  const fname = name.toLowerCase().replace(/\s+/g, '-');
+  return folder ? `images/${folder}/${fname}.jpg` : `images/${fname}.jpg`;
+}
+
+function createCakeCard(cake, isSpecial=false) {
   const card = document.createElement('div');
   card.className = 'product-card';
   if (isSpecial) card.classList.add('special');
-  const inner = `
+  const placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  const imgPath = makeImgPath(cake.name || 'cake');
+
+  card.innerHTML = `
     <div class="product-thumb">
-      <img alt="${cake.name}" src="images/${(cake.name || 'cake').toLowerCase().replace(/\s+/g, '-')}.jpg" onerror="this.style.visibility='hidden'"/>
+      <img class="lazy-img" alt="${escapeHtml(cake.name)}"
+           data-src="${imgPath}"
+           src="${placeholder}"
+           loading="lazy"
+           width="320" height="200" />
     </div>
     <div class="product-info">
-      <h3 class="product-title">${cake.name}</h3>
+      <h3 class="product-title">${escapeHtml(cake.name)}</h3>
       <div class="product-prices">
-        ${cake.price_half ? `<span class="half">Half: ${cake.price_half}</span>` : ''}
-        ${cake.price_full ? `<span class="full">Full: ${cake.price_full}</span>` : (cake.price ? `<span class="full">${cake.price}</span>` : '')}
+        ${cake.price_half ? `<span class="half">Half: ${escapeHtml(cake.price_half)}</span>` : ''}
+        ${cake.price_full ? `<span class="full">Full: ${escapeHtml(cake.price_full)}</span>` : (cake.price ? `<span class="full">${escapeHtml(cake.price)}</span>` : '')}
       </div>
-      <button class="add-btn" aria-label="Add ${cake.name}">Add</button>
+      <button class="add-btn" aria-label="Add ${escapeHtml(cake.name)}">Add</button>
     </div>
   `;
-  card.innerHTML = inner;
-  // Lightweight accessible attributes
   card.tabIndex = 0;
+  // cheap paint/layout isolation
+  card.style.contain = 'paint layout size';
+  card.style.willChange = 'transform, opacity';
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(8px)';
   return card;
 }
 
 function createTreatCard(item, type) {
   const card = document.createElement('div');
   card.className = 'product-card treat';
+  const placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  const imgPath = makeImgPath(item.name || 'treat', type);
+
   card.innerHTML = `
     <div class="product-thumb">
-      <img alt="${item.name}" src="images/${type}/${(item.name || '').toLowerCase().replace(/\s+/g, '-')}.jpg" onerror="this.style.visibility='hidden'"/>
+      <img class="lazy-img" alt="${escapeHtml(item.name)}"
+           data-src="${imgPath}"
+           src="${placeholder}"
+           loading="lazy"
+           width="320" height="200" />
     </div>
     <div class="product-info">
-      <h3 class="product-title">${item.name}</h3>
-      <div class="product-prices">${item.price ? item.price : ''}</div>
-      <button class="add-btn" aria-label="Add ${item.name}">Add</button>
+      <h3 class="product-title">${escapeHtml(item.name)}</h3>
+      <div class="product-prices">${item.price ? escapeHtml(item.price) : ''}</div>
+      <button class="add-btn" aria-label="Add ${escapeHtml(item.name)}">Add</button>
     </div>
   `;
   card.tabIndex = 0;
+  card.style.contain = 'paint layout size';
+  card.style.willChange = 'transform, opacity';
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(8px)';
   return card;
 }
 
-/* ---------- Chunked + lazy rendering to avoid jank when rendering many product cards ---------- */
-function chunkedAppend(container, items, createFn, options = {}) {
-  const chunkSize = options.chunkSize || 6;
-  const idleTimeout = options.idleTimeout || 30;
-  const total = items.length;
-  let index = 0;
+/* ===========================
+   Chunked appending scheduler
+   =========================== */
+function scheduleTask(fn) {
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(fn, { timeout: 300 });
+  } else {
+    requestAnimationFrame(() => setTimeout(fn, 32));
+  }
+}
 
-  function appendChunk() {
+function chunkedAppend(container, items, createFn, opts = {}) {
+  const chunkSize = opts.chunkSize || 3; // very small chunk
+  const idleTimeout = opts.idleTimeout || 30;
+  let i = 0;
+  const total = items.length;
+
+  function step() {
     const frag = document.createDocumentFragment();
-    const end = Math.min(index + chunkSize, total);
-    for (; index < end; index++) {
-      const el = createFn(items[index]);
-      // start hidden for intersection animation
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(15px)';
+    const end = Math.min(i + chunkSize, total);
+    for (; i < end; i++) {
+      const el = createFn(items[i]);
       frag.appendChild(el);
     }
     container.appendChild(frag);
 
-    if (index < total) {
-      if (window.requestIdleCallback) {
-        requestIdleCallback(appendChunk, { timeout: 200 });
-      } else {
-        requestAnimationFrame(() => setTimeout(appendChunk, idleTimeout));
-      }
+    // observe lazy images added
+    if (typeof imgObserverReady === 'function') imgObserverReady();
+
+    if (i < total) {
+      scheduleTask(step);
     } else {
-      if (typeof setupAnimations === 'function') {
-        setTimeout(() => setupAnimations(), 60);
-      }
+      // final cleanup callback
+      if (opts.onComplete) opts.onComplete();
+      console.log(`chunkedAppend -> finished appending ${total} items to #${container.id || container.className}`);
     }
   }
 
-  // kick off
-  appendChunk();
+  // start the first chunk with a tiny delay so browser paints initial UI
+  setTimeout(step, 50);
 }
 
-/* sentinel to prioritize finishing render when user scrolls to bottom */
-let loadSentinelObserver = null;
-function ensureLoadSentinel() {
+/* ===========================
+   Sentinel & minimal initial render
+   =========================== */
+let sentinelObserver = null;
+function ensureSentinel() {
   if (document.getElementById('load-sentinel')) return;
   const sentinel = document.createElement('div');
   sentinel.id = 'load-sentinel';
-  sentinel.style.width = '1px';
   sentinel.style.height = '1px';
-  sentinel.style.position = 'relative';
+  sentinel.style.width = '1px';
   document.body.appendChild(sentinel);
 
   if ('IntersectionObserver' in window) {
-    loadSentinelObserver = new IntersectionObserver(entries => {
+    sentinelObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // For each grid, finish outstanding items quickly but in micro-batches
-          document.querySelectorAll('.product-grid').forEach(grid => {
-            const expected = parseInt(grid.dataset.expectedCount || '0', 10);
-            if (expected && grid.children.length < expected) {
-              const id = grid.id;
-              const mapping = {
-                'classicGrid': bakeryData.menu.classic_cakes,
-                'premiumGrid': bakeryData.menu.premium_cakes,
-                'specialityGrid': bakeryData.menu.chef_speciality,
-                'browniesGrid': bakeryData.menu.brownies,
-                'cookiesGrid': bakeryData.menu.cookies,
-                'muffinsGrid': bakeryData.menu.muffins_cupcakes
-              };
-              const items = mapping[id] || [];
-              const already = grid.children.length;
-              const remainingItems = items.slice(already);
-              if (remainingItems.length) {
-                chunkedAppend(grid, remainingItems, (it) => {
-                  if (id === 'specialityGrid') return createCakeCard(it, true);
-                  if (id === 'browniesGrid') return createTreatCard(it, 'brownies');
-                  if (id === 'cookiesGrid') return createTreatCard(it, 'cookies');
-                  if (id === 'muffinsGrid') return createTreatCard(it, 'muffins');
-                  return createCakeCard(it, false);
-                }, { chunkSize: 12, idleTimeout: 20 });
-              }
-            }
-          });
-
-          if (loadSentinelObserver) {
-            loadSentinelObserver.disconnect();
-            loadSentinelObserver = null;
-          }
+          // user scrolled near end — prioritize finishing render for all grids
+          finishAllGridsFast();
+          sentinelObserver.disconnect();
         }
       });
-    }, { rootMargin: '200px' });
-
-    loadSentinelObserver.observe(sentinel);
+    }, { rootMargin: '400px' });
+    sentinelObserver.observe(sentinel);
   }
 }
 
-/* mark expected counts on grids to know how many items should be there */
+/* finish remaining quickly but in micro-batches */
+function finishAllGridsFast() {
+  console.log('Sentinel: prioritizing finish of remaining items');
+  document.querySelectorAll('.product-grid').forEach(grid => {
+    const expected = parseInt(grid.dataset.expectedCount || '0', 10);
+    const mapping = {
+      'classicGrid': bakeryData.menu.classic_cakes,
+      'premiumGrid': bakeryData.menu.premium_cakes,
+      'specialityGrid': bakeryData.menu.chef_speciality,
+      'browniesGrid': bakeryData.menu.brownies,
+      'cookiesGrid': bakeryData.menu.cookies,
+      'muffinsGrid': bakeryData.menu.muffins_cupcakes
+    };
+    const items = mapping[grid.id] || [];
+    const already = grid.children.length;
+    if (expected && already < expected) {
+      const remaining = items.slice(already);
+      // append with slightly larger chunk for quicker finish
+      chunkedAppend(grid, remaining, chooseFactoryForGrid(grid.id), { chunkSize: 12, idleTimeout: 16 });
+    }
+  });
+}
+
+function chooseFactoryForGrid(id) {
+  if (id === 'specialityGrid') return (it) => createCakeCard(it, true);
+  if (id === 'browniesGrid') return (it) => createTreatCard(it, 'brownies');
+  if (id === 'cookiesGrid') return (it) => createTreatCard(it, 'cookies');
+  if (id === 'muffinsGrid') return (it) => createTreatCard(it, 'muffins');
+  if (id === 'premiumGrid') return (it) => createCakeCard(it, false);
+  return (it) => createCakeCard(it, false);
+}
+
+/* ===========================
+   Image lazy loader (IntersectionObserver)
+   =========================== */
+let imgObserver = null;
+function setupImageLazyLoading() {
+  const selector = 'img.lazy-img';
+  if ('IntersectionObserver' in window) {
+    imgObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          const real = img.dataset.src;
+          if (real) {
+            img.src = real;
+            img.removeAttribute('data-src');
+          }
+          obs.unobserve(img);
+          // animate reveal on load
+          img.addEventListener('load', () => {
+            const card = img.closest('.product-card');
+            if (card) {
+              card.style.transition = 'opacity 260ms ease-out, transform 260ms ease-out';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }
+          }, { once: true });
+        }
+      });
+    }, { rootMargin: '400px 0px 400px 0px', threshold: 0.01 });
+
+    // Observe existing lazy images
+    document.querySelectorAll(selector).forEach(img => imgObserver.observe(img));
+  } else {
+    // fallback: progressively set images after small delays
+    document.querySelectorAll(selector).forEach((img, idx) => {
+      setTimeout(() => {
+        if (img.dataset && img.dataset.src) img.src = img.dataset.src;
+      }, 400 + idx * 80);
+    });
+  }
+
+  // MutationObserver: observe DOM additions to start observing new lazy images
+  const mo = new MutationObserver(muts => {
+    muts.forEach(m => {
+      m.addedNodes && m.addedNodes.forEach(node => {
+        if (node.nodeType === 1) {
+          if (node.matches && node.matches(selector) && imgObserver) imgObserver.observe(node);
+          node.querySelectorAll && node.querySelectorAll(selector).forEach(i => imgObserver && imgObserver.observe(i));
+        }
+      });
+    });
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
+
+  // helper for other functions to re-scan quickly
+  window.imgObserverReady = function() {
+    document.querySelectorAll(selector).forEach(img => {
+      if (imgObserver && img.dataset && img.dataset.src) imgObserver.observe(img);
+    });
+  };
+}
+
+/* ===========================
+   Populate Menu: minimal initial paint, then chunked append
+   =========================== */
 function markExpectedCounts() {
   const map = {
-    'classicGrid': bakeryData.menu.classic_cakes.length,
-    'premiumGrid': bakeryData.menu.premium_cakes.length,
-    'specialityGrid': bakeryData.menu.chef_speciality.length,
-    'browniesGrid': bakeryData.menu.brownies.length,
-    'cookiesGrid': bakeryData.menu.cookies.length,
-    'muffinsGrid': bakeryData.menu.muffins_cupcakes.length
+    'classicGrid': bakeryData.menu.classic_cakes ? bakeryData.menu.classic_cakes.length : 0,
+    'premiumGrid': bakeryData.menu.premium_cakes ? bakeryData.menu.premium_cakes.length : 0,
+    'specialityGrid': bakeryData.menu.chef_speciality ? bakeryData.menu.chef_speciality.length : 0,
+    'browniesGrid': bakeryData.menu.brownies ? bakeryData.menu.brownies.length : 0,
+    'cookiesGrid': bakeryData.menu.cookies ? bakeryData.menu.cookies.length : 0,
+    'muffinsGrid': bakeryData.menu.muffins_cupcakes ? bakeryData.menu.muffins_cupcakes.length : 0
   };
   Object.keys(map).forEach(id => {
     const el = document.getElementById(id);
@@ -194,145 +306,128 @@ function markExpectedCounts() {
   });
 }
 
-/* progressive population with small initial sync chunk and async remainder */
-function populateMenu() {
+function populateMenuAggressive() {
+  const t0 = nowMs();
   const sections = [
-    { id: 'classicGrid', items: bakeryData.menu.classic_cakes, factory: (it) => createCakeCard(it, false) },
-    { id: 'premiumGrid', items: bakeryData.menu.premium_cakes, factory: (it) => createCakeCard(it, false) },
-    { id: 'specialityGrid', items: bakeryData.menu.chef_speciality, factory: (it) => createCakeCard(it, true) },
-    { id: 'browniesGrid', items: bakeryData.menu.brownies, factory: (it) => createTreatCard(it, 'brownies') },
-    { id: 'cookiesGrid', items: bakeryData.menu.cookies, factory: (it) => createTreatCard(it, 'cookies') },
-    { id: 'muffinsGrid', items: bakeryData.menu.muffins_cupcakes, factory: (it) => createTreatCard(it, 'muffins') }
+    { id: 'classicGrid', items: bakeryData.menu.classic_cakes || [], factory: (it) => createCakeCard(it, false) },
+    { id: 'premiumGrid', items: bakeryData.menu.premium_cakes || [], factory: (it) => createCakeCard(it, false) },
+    { id: 'specialityGrid', items: bakeryData.menu.chef_speciality || [], factory: (it) => createCakeCard(it, true) },
+    { id: 'browniesGrid', items: bakeryData.menu.brownies || [], factory: (it) => createTreatCard(it, 'brownies') },
+    { id: 'cookiesGrid', items: bakeryData.menu.cookies || [], factory: (it) => createTreatCard(it, 'cookies') },
+    { id: 'muffinsGrid', items: bakeryData.menu.muffins_cupcakes || [], factory: (it) => createTreatCard(it, 'muffins') }
   ];
 
   sections.forEach(section => {
     const container = document.getElementById(section.id);
     if (!container) return;
 
-    const initialCount = Math.min(4, section.items.length);
-    const initialFrag = document.createDocumentFragment();
-    for (let i = 0; i < initialCount; i++) {
-      const el = section.factory(section.items[i]);
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(15px)';
-      initialFrag.appendChild(el);
-    }
-    container.appendChild(initialFrag);
+    // Clear existing children and put a skeleton placeholder for perceived performance
+    container.innerHTML = '';
+    // put 1 skeleton (so user sees card shell immediately)
+    const skeleton = createSkeletonCard();
+    container.appendChild(skeleton);
 
-    const remaining = section.items.slice(initialCount);
-    if (remaining.length) {
-      chunkedAppend(container, remaining, section.factory, { chunkSize: 6, idleTimeout: 40 });
+    // Synchronously add 1 real item (very small)
+    if (section.items.length > 0) {
+      const first = section.factory(section.items[0]);
+      // replace skeleton with first item quickly
+      setTimeout(() => {
+        container.replaceChild(first, skeleton);
+        // ensure lazy images observed
+        if (window.imgObserverReady) window.imgObserverReady();
+      }, 30);
+    } else {
+      // No items: keep skeleton then remove fast
+      setTimeout(() => container.innerHTML = '<div class="empty-note">No items</div>', 80);
+    }
+
+    // Append remaining items in chunks (very small micro-batches)
+    if (section.items.length > 1) {
+      const remaining = section.items.slice(1);
+      chunkedAppend(container, remaining, section.factory, {
+        chunkSize: 3,
+        idleTimeout: 50,
+        onComplete() {
+          // after each section finishes, ensure images are observed
+          if (window.imgObserverReady) window.imgObserverReady();
+        }
+      });
     }
   });
 
-  ensureLoadSentinel();
+  ensureSentinel();
+  const t1 = nowMs();
+  console.log('Initial paint time (ms):', Math.round(t1 - t0));
 }
 
-/* wrapper to mark expected counts then populate */
-function populateMenuWrapper() {
-  markExpectedCounts();
-  populateMenu();
-}
-
-/* ---------- previous animation setup (keeps intersection-driven entry animations) ---------- */
-function setupAnimations() {
-  const observerOptions = {
-    threshold: 0.05,
-    rootMargin: '0px 0px -20px 0px'
-  };
-
-  const observer = new IntersectionObserver((entries) => {
+/* ===========================
+   Animations setup (lightweight)
+   =========================== */
+function setupEntryAnimations() {
+  // IntersectionObserver already reveals card opacity/transform on image load; this is just a fallback
+  const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        // Unobserve after animation to improve performance
-        observer.unobserve(entry.target);
+        const el = entry.target;
+        el.style.transition = 'opacity 260ms ease-out, transform 260ms ease-out';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+        observer.unobserve(el);
       }
     });
-  }, observerOptions);
+  }, { threshold: 0.02, rootMargin: '0px 0px -12px 0px' });
 
-  // Observe all product cards and sections with faster stagger
-  setTimeout(() => {
-    document.querySelectorAll('.product-card').forEach((card, index) => {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(15px)';
-      // Reduced duration and stagger delay for faster animation
-      card.style.transition = 'opacity 260ms ease-out, transform 260ms ease-out';
+  document.querySelectorAll('.product-card').forEach(card => {
+    // if card already visible, force show
+    if (card.getBoundingClientRect().top < window.innerHeight) {
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    } else {
       observer.observe(card);
-    });
-  }, 80);
-}
-
-/* ---------- other UI helpers (nav, filters, search, touch optimizations) ---------- */
-/* Keep your existing implementations. The code below assumes your existing file already
-   contains functions like initializeMobileNav(), setupSmoothScrolling(), setupFilters(), etc.
-   If they aren't present, re-add or merge them from your old file. */
-
-function initializeMobileNav() {
-  const navToggle = document.getElementById('nav-toggle');
-  const navMenu = document.getElementById('nav-menu');
-  if (!navToggle || !navMenu) return;
-  function toggleMobileNav() {
-    navMenu.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', navMenu.classList.contains('open'));
-  }
-  navToggle.addEventListener('click', toggleMobileNav);
-  navToggle.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggleMobileNav();
     }
   });
 }
 
-/* Example: quick touch optimization for mobile */
-function setupTouchOptimizations() {
-  document.addEventListener('touchstart', function onTouch(e) {
-    // lightweight - helps avoid 300ms delay on some older devices/browsers
-    document.removeEventListener('touchstart', onTouch);
-  }, { passive: true });
-}
-
-/* Keep rest of your original helpers and logic here... 
-   (filters, search, modal behavior, lazy image loading if any) */
-
-/* ---------- Improved loading sequence ---------- */
-function initializeApp() {
-  // Show loading state
+/* ===========================
+   Initialize app
+   =========================== */
+function initializeAppAggressive() {
   document.body.style.opacity = '0';
-  document.body.style.transition = 'opacity 0.5s ease-in-out';
+  document.body.style.transition = 'opacity 0.35s ease-in-out';
 
-  // Initialize mobile navigation
-  initializeMobileNav();
+  // mark expected counts for sentinel
+  markExpectedCounts();
 
-  // Populate menu content
-  populateMenuWrapper();
+  // setup lazy loading & observers
+  setupImageLazyLoading();
 
-  // Setup interactions (you probably have these implemented)
-  if (typeof setupAnimations === 'function') setupAnimations();
-  setupTouchOptimizations();
+  // populate minimal UI then chunked remainder
+  populateMenuAggressive();
 
-  // finish loading
-  requestAnimationFrame(() => {
+  // setup final anims
+  setTimeout(() => {
+    setupEntryAnimations();
     document.body.style.opacity = '1';
+  }, 120);
+
+  // small perf watchers (optional)
+  window.addEventListener('load', () => {
+    console.log('window load event at', nowMs());
   });
 }
 
-/* Initialize everything when DOM is loaded */
-document.addEventListener('DOMContentLoaded', function() {
-  initializeApp();
-  setupTouchOptimizations();
-});
-
-// Handle page visibility for performance optimization
-document.addEventListener('visibilitychange', function() {
-  if (document.hidden) {
-    // Pause animations when page is hidden
-    document.body.style.animationPlayState = 'paused';
-  } else {
-    // Resume animations when page is visible
-    document.body.style.animationPlayState = 'running';
+/* Kick off when DOM is ready */
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    initializeAppAggressive();
+  } catch (e) {
+    console.error('init error', e);
   }
 });
-/* ---------- Additional CSS animations for product cards ---------- */
+
+/* Expose a helper if you want to run manual profiling from console */
+window._perfHelpers = {
+  finishAllGridsFast,
+  populateMenuAggressive
+};
+
